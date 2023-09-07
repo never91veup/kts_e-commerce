@@ -1,0 +1,21 @@
+/* Icon.css */
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.icon-primary {
+    color: var(--text-primary);
+}
+
+.icon-secondary {
+    color: var(--text-secondary);
+}
+
+.icon-accent {
+    color: var(--text-accent);
+}
+
+.rgba {
+    color: rgba(0, 0, 0, 0.2);
+}

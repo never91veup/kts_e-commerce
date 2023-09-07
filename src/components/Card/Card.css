@@ -1,0 +1,37 @@
+.card {
+    cursor: pointer;
+}
+
+.card:hover {
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.25);
+}
+
+.image-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 100%;
+}
+
+.image-wrapper img {
+    position: absolute;
+    width: 100%; /* Занимает всю ширину контейнера */
+    height: 100%; /* Занимает всю высоту контейнера */
+    object-fit: contain; /* Сохраняет пропорции без обрезки */
+    background-color: #D9D9D9;
+}
+
+.content-wrapper {
+    padding: 24px 12px;
+    background-color: white;
+}
+
+.info {
+    padding-bottom: 20px;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+

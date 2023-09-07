@@ -1,11 +1,32 @@
-$mainColor: #f5e3c6;
+/* Button.scss */
+@import "styles/variables";
 
-.container {
-  width: 500px;
-  height: 500px;
-  background-color: $mainColor;
+.button-main {
+    padding: $space-s $space-l;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-family: Roboto, sans-serif;
+    line-height: 134%;
+    background-color: $brand;
+    color: $button-primary-text;
+    border: none;
+    cursor: pointer;
 
-  &-color {
-    color: green;
-  }
+    &:hover {
+        background-color: $brand-hover;
+    }
+
+    &:disabled {
+        background-color: #D9D9D9;
+    }
+
+    &:active {
+        background-color: $brand-active;
+    }
+}
+
+.button--disabled {
+    pointer-events: none; /* Запрещаем события кнопки при задизейбленном состоянии */
 }

@@ -1,11 +1,19 @@
 import './App.scss';
-import Button from "./components/Button";
+import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+import ProductPage from "./pages/product";
+import ListProductsPage from "./pages/products";
+import Header from "./components/Header";
 
-function App() {
+const App = () => {
     return (
-        <>
-            <Button />
-        </>
+        <BrowserRouter>
+            <Header />
+            <Routes>
+                <Route path="/products" element={<ListProductsPage />} />
+                <Route path="/product/:id" element={<ProductPage />} />
+                <Route path="*" element={<Navigate to="/products" replace />} />
+            </Routes>
+        </BrowserRouter>
     )
 }
 
