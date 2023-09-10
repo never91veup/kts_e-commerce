@@ -1,31 +1,31 @@
 @import "styles/variables";
 
 .buttonMain {
-    padding: $space-s $space-l;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    font-family: Roboto, sans-serif;
-    line-height: 134%;
-    background-color: $brand;
-    color: $button-primary-text;
-    border: none;
-    cursor: pointer;
+  padding: $space-s $space-l;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-family: Roboto, sans-serif;
+  line-height: 134%;
+  background-color: $brand;
+  color: $button-primary-text;
+  border: none;
+  cursor: pointer;
 
-    &:hover {
-        background-color: $brand-hover!important;
-    }
+  &:hover {
+    background-color: $brand-hover!important;
+  }
 
-    &:disabled {
-        background-color: #D9D9D9!important;
-    }
+  &:disabled {
+    background-color: #D9D9D9!important;
+  }
 
-    &:active {
-        background-color: $brand-active!important;
-    }
+  &:active {
+    background-color: $brand-active!important;
+  }
 }
 
 .buttonDisabled {
-    pointer-events: none;
+  pointer-events: none;
 }

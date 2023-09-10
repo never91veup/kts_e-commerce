@@ -6,18 +6,20 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Header from "components/Header";
 import ProductPage from "pages/product";
 import ListProductsPage from "pages/products";
+import CategoriesPage from "./pages/categories";
 
 const App: React.FC = observer(() => {
-    return (
-        <BrowserRouter>
-            <Header />
-            <Routes>
-                <Route path="/products" element={<ListProductsPage />} />
-                <Route path="/product/:id" element={<ProductPage />} />
-                <Route path="*" element={<Navigate to="/products" replace />} />
-            </Routes>
-        </BrowserRouter>
-    )
+  return (
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/categories" element={<CategoriesPage />} />
+        <Route path="/products" element={<ListProductsPage />} />
+        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="*" element={<Navigate to="/products" replace />} />
+      </Routes>
+    </BrowserRouter>
+  )
 });
 
 export default App;

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import Icon, { IconProps } from '../Icon';
 
-
 const CheckIcon: React.FC<IconProps> = (props) => {
   return (
     <Icon {...props}>

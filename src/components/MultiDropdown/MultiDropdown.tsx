@@ -102,7 +102,7 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
           {filteredOptions.map((option) => (
             <Text
               key={option.key}
-              className={value.some((selected) => selected.key === option.key) ? styles['selected'] : ''}
+              className={value.some((selected) => selected.key === option.key) ? `${styles['multiText']} ${styles['selected']}` : styles['multiText']}
               onClick={() => handleOptionClick(option)}
             >
               {option.value}

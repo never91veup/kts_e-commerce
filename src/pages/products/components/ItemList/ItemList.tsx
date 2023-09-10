@@ -8,19 +8,19 @@ import Item from "../Item";
 import styles from "./ItemList.module.scss";
 
 export interface IProdProps {
-    items: IProduct[];
+  items: IProduct[];
 }
 
 const ItemList: React.FC<IProdProps> = observer(({ items }) => {
-    // const { item } = useContext(Context) as IAppContext;
+  // const { item } = useContext(Context) as IAppContext;
 
-    return (
-        <ul className={styles.itemsContainer}>
-            {items.map((product: IProduct) => (
-                <Item key={uid()} product={product} />
-            ))}
-        </ul>
-    );
+  return (
+    <ul className={styles.itemsContainer}>
+      {items.map((product: IProduct) => (
+        <Item key={uid()} product={product} />
+      ))}
+    </ul>
+  );
 });
 
 export default ItemList;
