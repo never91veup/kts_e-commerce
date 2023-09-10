@@ -21,8 +21,13 @@
       "config": ["config/*"],
       "styles": ["styles/*"],
       "assets": ["assets/*"],
-      "utils": ["utils/*"]
-    }
+      "utils": ["utils/*"],
+      "http": ["http/*"],
+      "pages": ["pages/*"],
+      "store": ["store/*"]
+    },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

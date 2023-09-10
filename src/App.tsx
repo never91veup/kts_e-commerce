@@ -1,10 +1,13 @@
-import './App.scss';
-import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
-import ProductPage from "./pages/product";
-import ListProductsPage from "./pages/products";
-import Header from "./components/Header";
+import './styles/styles.scss';
+//import styles from  "./App.module.scss";
+import { observer } from 'mobx-react-lite';
+import * as React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Header from "components/Header";
+import ProductPage from "pages/product";
+import ListProductsPage from "pages/products";
 
-const App = () => {
+const App: React.FC = observer(() => {
     return (
         <BrowserRouter>
             <Header />
@@ -15,6 +18,6 @@ const App = () => {
             </Routes>
         </BrowserRouter>
     )
-}
+});
 
-export default App
+export default App;

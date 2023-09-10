@@ -1,0 +1,22 @@
+@import "styles/variables";
+
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+
+    &-primary {
+        color: $text-primary;
+    }
+
+    &-secondary {
+        color: $text-secondary;
+    }
+
+    &-accent {
+        color: $text-accent;
+    }
+}
+
+.cp {
+    cursor: pointer;
+}

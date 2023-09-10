@@ -1,5 +1,5 @@
-import React from 'react';
-import './Loader.scss';
+import * as React from 'react';
+import styles from './Loader.module.scss';
 
 export type LoaderProps = {
     /** Размер */
@@ -9,14 +9,15 @@ export type LoaderProps = {
 };
 
 const Loader: React.FC<LoaderProps> = ({ size, className}) => {
+    const loaderSizeClass: string = styles[`loader_${size}`];
 
-  const loaderClass: string = `bc-brand loader loader-${size} ${className ? className : ''}`.trim();
+    const loaderClass: string = `${styles.bcBrand} ${styles.loader} ${loaderSizeClass} ${className ? className : ''}`.trim();
 
-  return (
-    <div className={loaderClass}>
-      <div className="loader-inner"></div>
-    </div>
-  );
+    return (
+        <div className={loaderClass}>
+            <div className={styles.loaderInner}></div>
+        </div>
+    );
 };
 
 export default Loader;

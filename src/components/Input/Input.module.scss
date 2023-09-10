@@ -1,0 +1,41 @@
+@import "styles/variables";
+
+.inputContainer {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 52px;
+
+  .inputField {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    padding: $space-s $space-xs;
+    background-color: white;
+    border: 1px solid white;
+    font-size: 16px;
+    line-height: 20px;
+    color: black;
+
+    &[disabled] {
+       color: rgba(0, 0, 0, 0.2);
+       pointer-events: none;
+    }
+
+    &:focus {
+       border-color: $input-border-focus;
+       outline: none;
+    }
+
+    &::placeholder {
+       color: $input-placeholder;
+    }
+  }
+
+  .inputAfterSlot {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+  }
+}

@@ -3,7 +3,8 @@
 
 html, body {
   font-family: 'Roboto', serif;
-  margin: 0;
+  background-color: #FAFAFA;
+  margin: 0 auto;
   padding: 0;
 }
 
@@ -18,9 +19,11 @@ h4,
 h5,
 h6,
 p,
+ul,
 blockquote,
 figure,
 pre {
   margin: 0;
+  padding: 0;
 }
 

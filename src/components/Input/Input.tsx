@@ -1,5 +1,5 @@
-import React from 'react';
-import './Input.css';
+import * as React from 'react';
+import styles from './Input.module.scss';
 
 export type InputProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -27,7 +27,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onChange(e.target.value);
     };
 
-    const addedClass: string = className ? `input-container ${className}` : 'input-container';
+    const addedClass: string = className ? `${styles.inputContainer} ${className}` : styles.inputContainer;
 
     return (
       <div className={addedClass}>
@@ -36,13 +36,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type="text"
           value={value}
           onChange={handleChange}
-          className="input-field"
+          className={styles.inputField}
           ref={ref}
         />
-        {afterSlot && <div className="input-after-slot">{afterSlot}</div>}
+        {afterSlot && <div className={styles.inputAfterSlot}>{afterSlot}</div>}
       </div>
     );
   }
 );
+
+Input.displayName = 'Input';
 
 export default Input;

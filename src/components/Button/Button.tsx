@@ -1,29 +1,43 @@
-import React from 'react';
 import classNames from 'classnames';
+import * as React from 'react';
 import Loader from '../Loader';
-import './Button.scss';
+import stl from '../Loader/Loader.module.scss';
+import styles from './Button.module.scss';
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  className?: string
   /** Состояние загрузки */
   loading?: boolean;
   /** Текст кнопки */
   children: React.ReactNode;
+  /** Тема кнопки */
+  theme?: "green" | "white";
 };
 
-const Button: React.FC<ButtonProps> = ({ loading, children, className, ...props }) => {
+const Button: React.FC<ButtonProps> = ({ theme = 'green', loading, children, className, ...props }) => {
+  const isGreen:  boolean = theme === 'green';
+
   const buttonClassName: string = classNames(
-    'button-main',
+    styles.buttonMain,
     className,
     {
-      'button--disabled': loading,
+      'buttonDisabled': loading,
     }
   );
 
   return (
-    <button className={buttonClassName} disabled={loading} {...props}>
+    <button
+        className={buttonClassName}
+        disabled={loading} {...props}
+        style={{
+          backgroundColor: isGreen ? '#518581' : 'white',
+          color: isGreen ? 'white' : 'black',
+          border: isGreen ? 'none' : '1px solid #AFADB5',
+        }}
+    >
       {loading ? (
           <>
-            <Loader size="s" className="mr-8 bc-white" />
+            <Loader size="s" className={`${stl.mr8} ${stl.bcWhite}`} />
             {children}
           </>
         ) : (

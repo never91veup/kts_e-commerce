@@ -1,8 +1,9 @@
-import React from 'react';
-import './Card.css';
+import * as React from 'react';
 import Text from '../Text';
+import stl from '../Text/Text.module.scss';
+import styles from './ListCard.module.scss';
 
-export type CardProps = {
+export type ListCardProps = {
   /** Дополнительный classname */
   className?: string,
   /** URL изображения */
@@ -12,7 +13,7 @@ export type CardProps = {
   /** Заголовок карточки */
   title: React.ReactNode;
   /** Описание карточки */
-  subtitle: React.ReactNode;
+  subtitle?: React.ReactNode;
   /** Содержимое карточки (футер/боковая часть), может быть пустым */
   contentSlot?: React.ReactNode;
   /** Клик на карточку */
@@ -21,7 +22,7 @@ export type CardProps = {
   actionSlot?: React.ReactNode;
 };
 
-const Card: React.FC<CardProps> = ({
+const ListCard: React.FC<ListCardProps> = ({
   className,
   image,
   captionSlot,
@@ -30,28 +31,29 @@ const Card: React.FC<CardProps> = ({
   contentSlot,
   onClick,
   actionSlot,
-}: CardProps) => {
-  const addedClass: string = className ? `card ${className}` : 'card';
+}: ListCardProps) => {
+  const addedClass: string = className ? `${styles.listCard} ${className}` : styles.listCard;
+
   return (
     <div className={addedClass} onClick={onClick}>
-      <div className="image-wrapper">
-        <img src={image}  alt='chess' />
+      <div className={styles.imageWrapper}>
+        <img src={image}  alt={`Картинка: ${title}`} />
       </div>
-      <div className='content-wrapper'>
-        <div className='info'>
+      <div className={styles.contentWrapper}>
+        <div className={styles.info}>
           {captionSlot && (
-            <Text className="mb-8" color="secondary" weight="medium" view="p-14">{captionSlot}</Text>
+            <Text className={stl.mb8} color="secondary" weight="medium" view="p-14">{captionSlot}</Text>
           )}
-          <Text className="mb-8" color="primary" weight="medium" view="p-20" maxLines={2}>
+          <Text className={stl.mb8} color="primary" weight="medium" view="p-20" maxLines={2}>
             {title}
           </Text>
-          <Text color="secondary" view="p-16" maxLines={3}>
-            {subtitle}
-          </Text>
+          {subtitle && (
+            <Text color="secondary" view="p-16" weight="normal" maxLines={3}>{subtitle}</Text>
+          )}
         </div>
-        <div className='actions'>
+        <div className={styles.actions}>
           {contentSlot && (
-            <Text color="primary" weight="bold" view="p-18">{contentSlot}</Text>
+            <Text color="primary" weight="bold" view="p-18">${contentSlot}</Text>
           )}
           {actionSlot &&
             <>
@@ -64,4 +66,4 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-export default Card;
+export default ListCard;

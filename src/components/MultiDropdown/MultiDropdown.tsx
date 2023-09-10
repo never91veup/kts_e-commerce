@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Input from '../Input';
-import './MultiDropdown.scss';
-import ArrowDownIcon from '../icons/ArrowDownIcon';
 import Text from '../Text';
+import ArrowDownIcon from '../icons/ArrowDownIcon';
+import styles from './MultiDropdown.module.scss';
 
 export type Option = {
   key: string;
@@ -29,7 +30,7 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
  }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [filteredOptions, setFilteredOptions] = useState(options);
-  const [disabled, setDisabled] = useState(initialDisabled); // Создаем локальное состояние для disabled
+  const [disabled, setDisabled] = useState(initialDisabled);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -49,7 +50,6 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
     };
   }, []);
 
-  // Обновляем состояние disabled при изменении пропса
   useEffect(() => {
     setDisabled(initialDisabled);
   }, [initialDisabled]);
@@ -82,7 +82,7 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
     }
   };
 
-  const addedClass: string = className ? `multi-dropdown ${className}` : 'multi-dropdown';
+  const addedClass: string = className ? `${styles['multi-dropdown']} ${className}` : styles['multi-dropdown'];
 
   return (
     <div className={addedClass} ref={dropdownRef}>
@@ -98,11 +98,11 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
         {...props}
       />
       {isOpen && !disabled && (
-        <ul className="dropdown-options">
+        <ul className={styles['dropdown-options']}>
           {filteredOptions.map((option) => (
             <Text
               key={option.key}
-              className={value.some((selected) => selected.key === option.key) ? 'selected' : ''}
+              className={value.some((selected) => selected.key === option.key) ? styles['selected'] : ''}
               onClick={() => handleOptionClick(option)}
             >
               {option.value}
