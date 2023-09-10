@@ -51,11 +51,9 @@
           display: flex;
           align-items: center;
           justify-content: center;
+          text-decoration: none;
+          color: black;
           cursor: pointer;
-
-          .active {
-
-          }
 
           &::before {
             content: "";
@@ -68,7 +66,7 @@
             opacity: 0;
           }
 
-          &:hover {
+          &.active {
             color: $brand;
 
             &::before {
