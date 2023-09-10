@@ -1,25 +1,63 @@
+import axios from "axios";
+import { debounce } from 'lodash';
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as React from "react";
 import Text from "components/Text";
 import { fetchItems } from "http/itemApi";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import MultiDropdown from "../../components/MultiDropdown";
-import { Context, IAppContext } from '../../main.tsx';
+// import { Context, IAppContext } from '../../main.tsx';
+import { IProduct } from "../../store/ItemStore.ts";
 import ItemList from "./components/ItemList";
 import styles from  "./ListProductsPage.module.scss";
 
 const ListProductsPage: React.FC = observer(() => {
-    const { item } = useContext(Context) as IAppContext;
-    const [total, setTotal] = useState<number>(0);
+    // const { item } = useContext(Context) as IAppContext;
+    const [items, setItems] = useState<IProduct[]>([]);
+    const [total, setTotal] = useState<number>(1);
+    const [currentOffset, setCurrentOffset] = useState<number>(0);
+    const [fetching, setFetching] = useState<boolean>(true);
 
     useEffect((): void => {
         fetchItems().then(data => {
-            item.setItems(data);
+            // item.setItems(data);
             setTotal(data.length);
         });
-    }, [item]);
+    }, []);
+    
+    useEffect((): void => {
+        if (fetching) {
+            if (items.length < total) {
+                axios.get(`https://api.escuelajs.co/api/v1/products?limit=3&offset=${currentOffset}`)
+                    .then((response) => {
+                        setItems((prevItems) => [...prevItems, ...response.data]);
+                        setCurrentOffset((prevState) => prevState + 3);
+                        setTotal(total);
+                    })
+                    .finally(() => setFetching(false));
+            } else {
+                setFetching(false);
+            }
+        }
+    }, [fetching])
+
+
+    useEffect((): () => void => {
+        document.addEventListener('scroll', scrollHandler);
+
+        return function (): void {
+            document.removeEventListener('scroll', scrollHandler);
+        };
+    }, [])
+
+    const scrollHandler = debounce((): void => {
+        const target = document.documentElement;
+        if (target.scrollHeight - (target.scrollTop + window.innerHeight) < 100) {
+            setFetching(true);
+        }
+    }, 300);
 
     return (
         <div className={styles.main}>
@@ -61,12 +99,12 @@ const ListProductsPage: React.FC = observer(() => {
                         <Text tag="div" view="p-20" weight="bold" color="accent">{total}</Text>
                     </div>
                     <div className={styles.productsList}>
-                        <ItemList />
+                        <ItemList items={items} />
                     </div>
                 </div>
-                <div className={styles.pagination}>
-                    1234...
-                </div>
+                {/*<div className={styles.pagination}>*/}
+                {/*    1234...*/}
+                {/*</div>*/}
             </div>
         </div>
     );

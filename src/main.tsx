@@ -12,7 +12,7 @@ export interface IAppContext {
 export const Context: React.Context<IAppContext | undefined> = React.createContext<IAppContext | undefined>(undefined);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <Context.Provider
             value={{
                 item: new ItemStore(),
@@ -20,5 +20,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         >
             <App />
         </Context.Provider>
-    </React.StrictMode>,
+    // </React.StrictMode>,
 )
