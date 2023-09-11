@@ -4,33 +4,29 @@ import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from "react";
 import * as React from "react";
 import Text from "components/Text";
-import { fetchItems } from "http/itemApi";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
-import MultiDropdown from "../../components/MultiDropdown";
-// import { Context, IAppContext } from '../../main.tsx';
+import MultiDropdown, {Option} from "../../components/MultiDropdown";
 import { IProduct } from "../../store/ItemStore.ts";
 import ItemList from "./components/ItemList";
 import styles from  "./ListProductsPage.module.scss";
 
 const ListProductsPage: React.FC = observer(() => {
-  // const { item } = useContext(Context) as IAppContext;
-  const [buttonClicked, setButtonClicked] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
+  const [allItemsLoaded, setAllItemsLoaded] = useState<boolean>(false);
   const [items, setItems] = useState<IProduct[]>([]);
-  const [total, setTotal] = useState<number>(1);
   const [currentOffset, setCurrentOffset] = useState<number>(0);
   const [fetching, setFetching] = useState<boolean>(true);
-  const [hasFetchedItems, setHasFetchedItems] = useState<boolean>(false);
-  const [filteredItems, setFilteredItems] = useState<IProduct[]>([]);
+  const [isDirty, setIsDirty] = useState<boolean>(false);
   const scrollHandler = debounce((): void => {
     const target: HTMLElement = document.documentElement;
-    if (target.scrollHeight - (target.scrollTop + window.innerHeight) < 100) {
+    if (!allItemsLoaded && target.scrollHeight - (target.scrollTop + window.innerHeight) < 100) {
       setFetching(true);
     }
   }, 200);
   const handleInputChange = (text: string): void => {
     setSearchText(text);
+    setIsDirty(true);
   };
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter') {
@@ -38,44 +34,27 @@ const ListProductsPage: React.FC = observer(() => {
     }
   };
   const handleSearchClick = (): void => {
-    axios.get("https://api.escuelajs.co/api/v1/products")
-      .then((response): void => {
-        const filteredProducts = response.data.filter((product: IProduct) => {
-          return product.title.toLowerCase().includes(searchText.toLowerCase());
-        });
-        setFilteredItems(filteredProducts.length > 0 ? filteredProducts : searchText === "" ? items : []);
-        setButtonClicked(true);
-      })
-      .catch((error): void => {
-        throw new Error(`Error fetching products: ${error}`);
-      });
+    setIsDirty(false);
+    setCurrentOffset(0);
+    setItems([]);
+    setAllItemsLoaded(false);
+    setFetching(true);
   };
 
   useEffect((): void => {
-    setTotal(filteredItems.length);
-  }, [filteredItems]);
-
-  useEffect((): void => {
     if (fetching) {
-      if (items.length < total) {
-        axios.get(`https://api.escuelajs.co/api/v1/products?limit=3&offset=${currentOffset}`)
-          .then((response): void => {
+      axios.get(`https://api.escuelajs.co/api/v1/products?${searchText ? `title=${searchText}&` : ''}limit=3&offset=${currentOffset}`)
+        .then((response): void => {
+          if (response.data.length === 0) {
+            setAllItemsLoaded(true);
+          } else {
             setItems((prevItems: IProduct[]) => [...prevItems, ...response.data]);
             setCurrentOffset((prevState: number) => prevState + 3);
-            if (!hasFetchedItems) {
-              fetchItems().then(data => {
-                // item.setItems(data);
-                setTotal(data.length);
-                setHasFetchedItems(true);
-              });
-            }
-          })
-          .finally(() => setFetching(false));
-      } else {
-        setFetching(false);
-      }
+          }
+        })
+        .finally(() => setFetching(false));
     }
-  }, [fetching, hasFetchedItems]);
+  }, [fetching]);
 
   useEffect((): () => void => {
     document.addEventListener('scroll', scrollHandler);
@@ -104,15 +83,15 @@ const ListProductsPage: React.FC = observer(() => {
               value={searchText}
               placeholder="Search product"
             />
-            <Button onClick={handleSearchClick}>
+            <Button onClick={handleSearchClick} disabled={!isDirty}>
               <Text tag="div" view="button" weight="normal" maxLines={1}>Find now</Text>
             </Button>
           </div>
           <div className={styles.filter}>
             <MultiDropdown
-              getTitle={(opts) => {
+              getTitle={(opts: Option[]) => {
                 const strOpts: string[] = [];
-                opts.map((opt) => strOpts.push(opt.value))
+                opts.map((opt: Option) => strOpts.push(opt.value))
                 return strOpts.join(", ")
               }}
               onChange={(): void => {}}
@@ -124,15 +103,12 @@ const ListProductsPage: React.FC = observer(() => {
         <div className={styles.products}>
           <div className={styles.productsTotal}>
             <Text tag="div" view="title" weight="bold" color="primary">Total Product</Text>
-            <Text tag="div" view="p-20" weight="bold" color="accent">{total}</Text>
+            <Text tag="div" view="p-20" weight="bold" color="accent">{10000000}</Text>
           </div>
           <div className={styles.productsList}>
-            <ItemList items={buttonClicked ? filteredItems : items} />
+            <ItemList items={items} />
           </div>
         </div>
-        {/*<div className={styles.pagination}>*/}
-        {/*    1234...*/}
-        {/*</div>*/}
       </div>
     </div>
   );
