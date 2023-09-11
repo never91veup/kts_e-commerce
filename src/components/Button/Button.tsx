@@ -35,15 +35,8 @@ const Button: React.FC<ButtonProps> = ({theme = 'green', loading, children, clas
         border: isGreen ? 'none' : '1px solid #AFADB5',
       }}
     >
-      {loading ? (
-        <>
-          <Loader size="s" className={`${stl.mr8} ${stl.bcWhite}`}/>
-          {children}
-        </>
-      ) : (
-        children
-      )
-      }
+      {loading && <Loader size="s" className={`${stl.mr8} ${stl.bcWhite}`}/>}
+      {children}
     </button>
   );
 };

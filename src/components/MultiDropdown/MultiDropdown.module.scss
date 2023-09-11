@@ -8,7 +8,7 @@
     margin-top: $space-xxs;
 
     background-color: white;
-    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 10px 0 $color-box-shadow;
 
     .selected {
       color: $brand;
