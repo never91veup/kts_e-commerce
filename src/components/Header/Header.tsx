@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {NavLink, useLocation} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import { uid } from 'uid';
 import Text from "../Text";
 import BagIcon from "../icons/BagIcon";
@@ -16,20 +16,20 @@ const Header: React.FC = () => {
   return (
     <div className={styles.header}>
       <div className={styles.headerContent}>
-        <div className={styles.left}>
+        <Link to="/products" className={styles.left}>
           <LogoIcon width="42" height="42" />
           <LalasiaIcon width="77" height="20" />
-        </div>
+        </Link>
         <div className={styles.center}>
           <ul className={styles.headerList}>
             {NavHeaders.map((item: string) => (
-              <NavLink
+              <Link
                 className={`${styles.headerListItem} ${location.pathname === `/${item.toLowerCase().split(" ").join("-")}` ? styles.active : ''}`}
                 key={uid()}
                 to={`/${item.toLowerCase().split(" ").join("-")}`}
               >
                 <Text tag='div' weight="medium" view="p-18" maxLines={1}>{item}</Text>
-              </NavLink>
+              </Link>
             ))}
           </ul>
         </div>

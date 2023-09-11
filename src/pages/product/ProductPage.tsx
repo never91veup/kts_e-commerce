@@ -1,17 +1,18 @@
 import * as React from 'react';
 import { useEffect, useState } from "react";
-import {Link, useParams} from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 // import Button from "../../components/Button";
 import Button from "../../components/Button";
 import Text from "../../components/Text";
 import ArrowRightIcon from "../../components/icons/ArrowRightIcon";
 import { fetchOneItem } from "../../http/itemApi.ts";
+import { IProduct } from "../../store/ItemStore.ts";
 import ProductCard from "./components/ProductCard";
 import styles from "./ProductPage.module.scss";
 
 const ProductPage: React.FC = () => {
-  const { id } = useParams();
-  const [product, setProduct] = useState({
+  const { id } = useParams<string>();
+  const [product, setProduct] = useState<IProduct>({
     id: 0,
     category: {
       id: 0,
