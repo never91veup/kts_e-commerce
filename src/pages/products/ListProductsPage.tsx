@@ -15,19 +15,53 @@ import styles from  "./ListProductsPage.module.scss";
 
 const ListProductsPage: React.FC = observer(() => {
   // const { item } = useContext(Context) as IAppContext;
+  const [buttonClicked, setButtonClicked] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
   const [items, setItems] = useState<IProduct[]>([]);
   const [total, setTotal] = useState<number>(1);
   const [currentOffset, setCurrentOffset] = useState<number>(0);
   const [fetching, setFetching] = useState<boolean>(true);
   const [hasFetchedItems, setHasFetchedItems] = useState<boolean>(false);
+  const [filteredItems, setFilteredItems] = useState<IProduct[]>([]);
+  const scrollHandler = debounce((): void => {
+    const target: HTMLElement = document.documentElement;
+    if (target.scrollHeight - (target.scrollTop + window.innerHeight) < 100) {
+      setFetching(true);
+    }
+  }, 200);
+  const handleInputChange = (text: string): void => {
+    setSearchText(text);
+  };
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (event.key === 'Enter') {
+      handleSearchClick();
+    }
+  };
+  const handleSearchClick = (): void => {
+    axios.get("https://api.escuelajs.co/api/v1/products")
+      .then((response): void => {
+        const filteredProducts = response.data.filter((product: IProduct) => {
+          return product.title.toLowerCase().includes(searchText.toLowerCase());
+        });
+        setFilteredItems(filteredProducts.length > 0 ? filteredProducts : searchText === "" ? items : []);
+        setButtonClicked(true);
+      })
+      .catch((error): void => {
+        throw new Error(`Error fetching products: ${error}`);
+      });
+  };
+
+  useEffect((): void => {
+    setTotal(filteredItems.length);
+  }, [filteredItems]);
 
   useEffect((): void => {
     if (fetching) {
       if (items.length < total) {
         axios.get(`https://api.escuelajs.co/api/v1/products?limit=3&offset=${currentOffset}`)
-          .then((response) => {
-            setItems((prevItems) => [...prevItems, ...response.data]);
-            setCurrentOffset((prevState) => prevState + 3);
+          .then((response): void => {
+            setItems((prevItems: IProduct[]) => [...prevItems, ...response.data]);
+            setCurrentOffset((prevState: number) => prevState + 3);
             if (!hasFetchedItems) {
               fetchItems().then(data => {
                 // item.setItems(data);
@@ -41,8 +75,7 @@ const ListProductsPage: React.FC = observer(() => {
         setFetching(false);
       }
     }
-  }, [fetching, hasFetchedItems])
-
+  }, [fetching, hasFetchedItems]);
 
   useEffect((): () => void => {
     document.addEventListener('scroll', scrollHandler);
@@ -50,14 +83,7 @@ const ListProductsPage: React.FC = observer(() => {
     return function (): void {
       document.removeEventListener('scroll', scrollHandler);
     };
-  }, [])
-
-  const scrollHandler = debounce((): void => {
-    const target = document.documentElement;
-    if (target.scrollHeight - (target.scrollTop + window.innerHeight) < 100) {
-      setFetching(true);
-    }
-  }, 200);
+  }, [scrollHandler]);
 
   return (
     <div className={styles.main}>
@@ -73,10 +99,12 @@ const ListProductsPage: React.FC = observer(() => {
         <div className={styles.features}>
           <div className={styles.searcher}>
             <Input
-              onChange={(): void => {}}
-              value="Search product"
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              value={searchText}
+              placeholder="Search product"
             />
-            <Button>
+            <Button onClick={handleSearchClick}>
               <Text tag="div" view="button" weight="normal" maxLines={1}>Find now</Text>
             </Button>
           </div>
@@ -99,7 +127,7 @@ const ListProductsPage: React.FC = observer(() => {
             <Text tag="div" view="p-20" weight="bold" color="accent">{total}</Text>
           </div>
           <div className={styles.productsList}>
-            <ItemList items={items} />
+            <ItemList items={buttonClicked ? filteredItems : items} />
           </div>
         </div>
         {/*<div className={styles.pagination}>*/}
