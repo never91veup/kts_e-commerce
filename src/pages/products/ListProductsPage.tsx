@@ -8,8 +8,11 @@ import Input from "components/Input";
 import MultiDropdown, {Option} from "components/MultiDropdown";
 import Text from "components/Text";
 import {IProduct} from "store/ItemStore.ts";
+import {BASE_API_URL} from "../../config/urls.ts";
 import ItemList from "./components/ItemList";
 import styles from "./ListProductsPage.module.scss";
+
+const currentLimit: number = 3;
 
 const ListProductsPage: React.FC = observer(() => {
   const [searchText, setSearchText] = useState<string>("");
@@ -43,7 +46,7 @@ const ListProductsPage: React.FC = observer(() => {
 
   useEffect((): void => {
     if (fetching) {
-      axios.get(`https://api.escuelajs.co/api/v1/products?${searchText ? `title=${searchText}&` : ''}limit=3&offset=${currentOffset}`)
+      axios.get(`${BASE_API_URL}/products?${searchText ? `title=${searchText}&` : ''}limit=${currentLimit}&offset=${currentOffset}`)
         .then((response): void => {
           if (response.data.length === 0) {
             setAllItemsLoaded(true);

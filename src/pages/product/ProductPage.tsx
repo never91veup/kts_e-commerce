@@ -1,7 +1,8 @@
-import * as React from 'react';
+import * as React from "react";
 import {useEffect, useState} from "react";
-import {Link, useParams} from 'react-router-dom';
+import {Link, useParams} from "react-router-dom";
 import Button from "components/Button";
+import Loader from "components/Loader";
 import Text from "components/Text";
 import ArrowRightIcon from "components/icons/ArrowRightIcon";
 import {fetchOneItem} from "http/itemApi.ts";
@@ -33,6 +34,10 @@ const ProductPage: React.FC = () => {
       setProduct(data);
     });
   }, [id]);
+
+  if (!product) {
+    return <Loader/>
+  }
 
   return (
     <div className={styles.main}>

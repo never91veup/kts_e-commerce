@@ -11,6 +11,9 @@ export interface ItemProps {
 
 const Item: React.FC<ItemProps> = ({product}) => {
   const navigate: NavigateFunction = useNavigate();
+  const handleClick = React.useCallback(() => {
+    navigate(`/product/${product.id}`);
+  }, [navigate]);
 
   return (
     <ListCard
@@ -24,9 +27,7 @@ const Item: React.FC<ItemProps> = ({product}) => {
           <Text maxLines={1} view="button" tag="div" weight="normal">Add to Cart</Text>
         </Button>
       }
-      onClick={(): void => {
-        navigate(`/product/${product.id}`)
-      }}
+      onClick={handleClick}
     />
   );
 };

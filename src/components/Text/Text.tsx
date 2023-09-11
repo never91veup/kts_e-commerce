@@ -42,16 +42,10 @@ const Text: React.FC<TextProps> = ({
     }
     : {};
   const combinedClassNames: string = `${styles.text} ${viewClass} ${weightClass} ${colorClass} ${className || ''}`.trim();
-  const Tag = tag ? tag : 'p';
-
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-    }
-  };
+  const Tag = tag || 'p';
 
   return (
-    <Tag className={combinedClassNames} style={maxLinesStyle} onClick={handleClick}>
+    <Tag className={combinedClassNames} style={maxLinesStyle} onClick={onClick}>
       {children}
     </Tag>
   );

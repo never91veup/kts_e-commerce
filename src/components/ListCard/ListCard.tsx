@@ -55,11 +55,7 @@ const ListCard: React.FC<ListCardProps> = ({
           {contentSlot && (
             <Text color="primary" weight="bold" view="p-18">${contentSlot}</Text>
           )}
-          {actionSlot &&
-              <>
-                {actionSlot}
-              </>
-          }
+          {actionSlot}
         </div>
       </div>
     </div>
