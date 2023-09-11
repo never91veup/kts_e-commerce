@@ -8,7 +8,7 @@ export type LoaderProps = {
   className?: string;
 };
 
-const Loader: React.FC<LoaderProps> = ({ size, className}) => {
+const Loader: React.FC<LoaderProps> = ({size, className}) => {
   const loaderSizeClass: string = styles[`loader_${size}`];
 
   const loaderClass: string = `${styles.bcBrand} ${styles.loader} ${loaderSizeClass} ${className ? className : ''}`.trim();

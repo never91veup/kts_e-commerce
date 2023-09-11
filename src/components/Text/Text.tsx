@@ -7,7 +7,7 @@ export type TextProps = {
   /** Стиль отображения */
   view?: 'title' | 'button' | 'p-20' | 'p-18' | 'p-16' | 'p-14';
   /** Html-тег */
-  tag?:  'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div' | 'p' | 'span';
+  tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div' | 'p' | 'span';
   /** Начертание шрифта */
   weight?: 'normal' | 'medium' | 'bold';
   /** Контент */
@@ -33,7 +33,13 @@ const Text: React.FC<TextProps> = ({
   const weightClass: string = weight ? styles[`text-weight-${weight}`] : '';
   const colorClass: string = color ? styles[`text-color-${color}`] : '';
   const maxLinesStyle: React.CSSProperties = maxLines
-    ? { overflow: 'hidden', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: maxLines, lineHeight: '120%' }
+    ? {
+      overflow: 'hidden',
+      display: '-webkit-box',
+      WebkitBoxOrient: 'vertical',
+      WebkitLineClamp: maxLines,
+      lineHeight: '120%'
+    }
     : {};
   const combinedClassNames: string = `${styles.text} ${viewClass} ${weightClass} ${colorClass} ${className || ''}`.trim();
   const Tag = tag ? tag : 'p';

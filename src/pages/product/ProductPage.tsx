@@ -1,17 +1,16 @@
 import * as React from 'react';
-import { useEffect, useState } from "react";
-import { Link, useParams } from 'react-router-dom';
-// import Button from "../../components/Button";
-import Button from "../../components/Button";
-import Text from "../../components/Text";
-import ArrowRightIcon from "../../components/icons/ArrowRightIcon";
-import { fetchOneItem } from "../../http/itemApi.ts";
-import { IProduct } from "../../store/ItemStore.ts";
+import {useEffect, useState} from "react";
+import {Link, useParams} from 'react-router-dom';
+import Button from "components/Button";
+import Text from "components/Text";
+import ArrowRightIcon from "components/icons/ArrowRightIcon";
+import {fetchOneItem} from "http/itemApi.ts";
+import {IProduct} from "store/ItemStore.ts";
 import ProductCard from "./components/ProductCard";
 import styles from "./ProductPage.module.scss";
 
 const ProductPage: React.FC = () => {
-  const { id } = useParams<string>();
+  const {id} = useParams<string>();
   const [product, setProduct] = useState<IProduct>({
     id: 0,
     category: {
@@ -39,8 +38,8 @@ const ProductPage: React.FC = () => {
     <div className={styles.main}>
       <div className={styles.mainContainer}>
         <Link className={styles.back} to="/products">
-          <ArrowRightIcon width="32" height="32" />
-          <Text tag="div" view="p-20" weight="normal" >Назад</Text>
+          <ArrowRightIcon width="32" height="32"/>
+          <Text tag="div" view="p-20" weight="normal">Назад</Text>
         </Link>
         <div className={styles.content}>
           <ProductCard

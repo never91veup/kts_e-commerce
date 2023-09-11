@@ -1,1 +1,1 @@
-export { default } from "./BagIcon";
+export {default} from "./BagIcon";

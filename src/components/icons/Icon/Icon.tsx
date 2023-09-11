@@ -8,7 +8,7 @@ export type IconProps = React.SVGAttributes<SVGElement> & {
   color?: 'primary' | 'secondary' | 'accent';
 };
 
-const Icon: React.FC<React.PropsWithChildren<IconProps>> = ({ color, width = 24, height = 24, ...props }) => {
+const Icon: React.FC<React.PropsWithChildren<IconProps>> = ({color, width = 24, height = 24, ...props}) => {
   const iconColorClass: string = color ? `${styles.icon} ${styles[`icon-${color}`]}` : styles.icon;
 
   return (

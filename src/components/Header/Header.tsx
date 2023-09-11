@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {Link, useLocation} from 'react-router-dom';
-import { uid } from 'uid';
-import Text from "../Text";
-import BagIcon from "../icons/BagIcon";
-import stl from "../icons/Icon/Icon.module.scss";
-import LalasiaIcon from "../icons/LalasiaIcon";
-import LogoIcon from "../icons/LogoIcon";
-import UserIcon from "../icons/UserIcon";
-import styles from  "./Header.module.scss";
+import {uid} from 'uid';
+import Text from "components/Text";
+import BagIcon from "components/icons/BagIcon";
+import stl from "components/icons/Icon/Icon.module.scss";
+import LalasiaIcon from "components/icons/LalasiaIcon";
+import LogoIcon from "components/icons/LogoIcon";
+import UserIcon from "components/icons/UserIcon";
+import styles from "./Header.module.scss";
 
 const Header: React.FC = () => {
   const NavHeaders: string[] = ["Products", "Categories", "About us"];
@@ -17,8 +17,8 @@ const Header: React.FC = () => {
     <div className={styles.header}>
       <div className={styles.headerContent}>
         <Link to="/products" className={styles.left}>
-          <LogoIcon width="42" height="42" />
-          <LalasiaIcon width="77" height="20" />
+          <LogoIcon width="42" height="42"/>
+          <LalasiaIcon width="77" height="20"/>
         </Link>
         <div className={styles.center}>
           <ul className={styles.headerList}>
@@ -34,8 +34,8 @@ const Header: React.FC = () => {
           </ul>
         </div>
         <div className={styles.right}>
-          <BagIcon className={stl.cp} width="30" height="30" />
-          <UserIcon className={stl.cp} width="30" height="30" />
+          <BagIcon className={stl.cp} width="30" height="30"/>
+          <UserIcon className={stl.cp} width="30" height="30"/>
         </div>
       </div>
     </div>

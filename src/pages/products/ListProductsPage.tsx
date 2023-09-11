@@ -1,15 +1,15 @@
 import axios from "axios";
-import { debounce } from 'lodash';
-import { observer } from 'mobx-react-lite';
-import { useEffect, useState } from "react";
+import {debounce} from 'lodash';
+import {observer} from 'mobx-react-lite';
+import {useEffect, useState} from "react";
 import * as React from "react";
+import Button from "components/Button";
+import Input from "components/Input";
+import MultiDropdown, {Option} from "components/MultiDropdown";
 import Text from "components/Text";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
-import MultiDropdown, {Option} from "../../components/MultiDropdown";
-import { IProduct } from "../../store/ItemStore.ts";
+import {IProduct} from "store/ItemStore.ts";
 import ItemList from "./components/ItemList";
-import styles from  "./ListProductsPage.module.scss";
+import styles from "./ListProductsPage.module.scss";
 
 const ListProductsPage: React.FC = observer(() => {
   const [searchText, setSearchText] = useState<string>("");
@@ -72,7 +72,8 @@ const ListProductsPage: React.FC = observer(() => {
             <Text tag="h1" color="primary" weight="bold">Products</Text>
           </div>
           <div className={styles.heroDescription}>
-            <Text tag="div" view="p-20" color="secondary" weight="normal">We display products based on the latest products we have, if you want to see our old products please enter the name of the item</Text>
+            <Text tag="div" view="p-20" color="secondary" weight="normal">We display products based on the latest
+              products we have, if you want to see our old products please enter the name of the item</Text>
           </div>
         </div>
         <div className={styles.features}>
@@ -94,7 +95,8 @@ const ListProductsPage: React.FC = observer(() => {
                 opts.map((opt: Option) => strOpts.push(opt.value))
                 return strOpts.join(", ")
               }}
-              onChange={(): void => {}}
+              onChange={(): void => {
+              }}
               options={[{key: "t1", value: "test1"}, {key: "t2", value: "test2"}, {key: "t3", value: "test3"}]}
               value={[{key: "t2", value: "test2"}, {key: "t3", value: "test3"}]}
             />
@@ -106,7 +108,7 @@ const ListProductsPage: React.FC = observer(() => {
             <Text tag="div" view="p-20" weight="bold" color="accent">{10000000}</Text>
           </div>
           <div className={styles.productsList}>
-            <ItemList items={items} />
+            <ItemList items={items}/>
           </div>
         </div>
       </div>

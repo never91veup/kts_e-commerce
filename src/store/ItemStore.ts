@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import {makeAutoObservable} from 'mobx';
 
 export interface ICategory {
   creationAt: string;
@@ -21,12 +21,15 @@ export interface IProduct {
 
 export default class ItemStore {
   private _items: IProduct[] = [];
+
   constructor() {
     makeAutoObservable(this);
   }
+
   setItems(products: IProduct[]): void {
     this._items = products;
   }
+
   get items(): IProduct[] {
     return this._items;
   }

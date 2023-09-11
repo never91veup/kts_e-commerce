@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Text from '../Text';
-import stl from '../Text/Text.module.scss';
+import Text from 'components/Text';
+import stl from 'components/Text/Text.module.scss';
 import styles from './ListCard.module.scss';
 
 export type ListCardProps = {
@@ -23,21 +23,21 @@ export type ListCardProps = {
 };
 
 const ListCard: React.FC<ListCardProps> = ({
-  className,
-  image,
-  captionSlot,
-  title,
-  subtitle,
-  contentSlot,
-  onClick,
-  actionSlot,
-}: ListCardProps) => {
+                                             className,
+                                             image,
+                                             captionSlot,
+                                             title,
+                                             subtitle,
+                                             contentSlot,
+                                             onClick,
+                                             actionSlot,
+                                           }: ListCardProps) => {
   const addedClass: string = className ? `${styles.listCard} ${className}` : styles.listCard;
 
   return (
     <div className={addedClass} onClick={onClick}>
       <div className={styles.imageWrapper}>
-        <img src={image}  alt={`Картинка: ${title}`} />
+        <img src={image} alt={`Картинка: ${title}`}/>
       </div>
       <div className={styles.contentWrapper}>
         <div className={styles.info}>
@@ -56,9 +56,9 @@ const ListCard: React.FC<ListCardProps> = ({
             <Text color="primary" weight="bold" view="p-18">${contentSlot}</Text>
           )}
           {actionSlot &&
-            <>
-              {actionSlot}
-            </>
+              <>
+                {actionSlot}
+              </>
           }
         </div>
       </div>

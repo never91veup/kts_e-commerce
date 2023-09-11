@@ -1,2 +1,2 @@
-export { default } from './ListCard.tsx';
+export {default} from './ListCard.tsx';
 export * from './ListCard.tsx';

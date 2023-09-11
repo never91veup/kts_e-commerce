@@ -18,17 +18,17 @@
     color: black;
 
     &[disabled] {
-       color: rgba(0, 0, 0, 0.2);
-       pointer-events: none;
+      color: rgba(0, 0, 0, 0.2);
+      pointer-events: none;
     }
 
     &:focus {
-       border-color: $input-border-focus;
-       outline: none;
+      border-color: $input-border-focus;
+      outline: none;
     }
 
     &::placeholder {
-       color: $input-placeholder;
+      color: $input-placeholder;
     }
   }
 

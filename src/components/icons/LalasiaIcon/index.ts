@@ -1,1 +1,1 @@
-export { default } from "./LalasiaIcon";
+export {default} from "./LalasiaIcon";

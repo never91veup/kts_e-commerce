@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import Input from '../Input';
-import Text from '../Text';
-import ArrowDownIcon from '../icons/ArrowDownIcon';
+import {useEffect, useRef, useState} from 'react';
+import Input from 'components/Input';
+import Text from 'components/Text';
+import ArrowDownIcon from 'components/icons/ArrowDownIcon';
 import styles from './MultiDropdown.module.scss';
 
 export type Option = {
@@ -20,14 +20,14 @@ export type MultiDropdownProps = {
 };
 
 const MultiDropdown: React.FC<MultiDropdownProps> = ({
-  className,
-  options,
-  value,
-  onChange,
-  disabled: initialDisabled,
-  getTitle,
-  ...props
- }) => {
+                                                       className,
+                                                       options,
+                                                       value,
+                                                       onChange,
+                                                       disabled: initialDisabled,
+                                                       getTitle,
+                                                       ...props
+                                                     }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [filteredOptions, setFilteredOptions] = useState(options);
   const [disabled, setDisabled] = useState(initialDisabled);
@@ -94,7 +94,7 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
         onChange={handleInputChange}
         onFocus={() => setIsOpen(true)}
         disabled={disabled}
-        afterSlot={<ArrowDownIcon color="secondary" />}
+        afterSlot={<ArrowDownIcon color="secondary"/>}
         {...props}
       />
       {isOpen && !disabled && (

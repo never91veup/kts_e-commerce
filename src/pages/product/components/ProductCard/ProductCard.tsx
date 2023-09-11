@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Text from "../../../../components/Text";
+import Text from "components/Text";
 import styles from './ProductCard.module.scss';
 
 export type ProductCardProps = {
@@ -30,7 +30,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div className={addedClass}>
       <div className={styles.imageWrapper}>
-        <img src={image}  alt='Картинка' />
+        <img src={image} alt='Картинка'/>
       </div>
       <div className={styles.contentWrapper}>
         <div className={styles.info}>

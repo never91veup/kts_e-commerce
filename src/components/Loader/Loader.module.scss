@@ -18,8 +18,8 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%) rotate(32deg);
-    width: calc(200%/3);
-    height: calc(200%/3);
+    width: calc(200% / 3);
+    height: calc(200% / 3);
     border: var(--border-width, 5px) solid var(--brand-color);
     border-right: var(--border-width, 5px) solid transparent;
     border-radius: 50%;
