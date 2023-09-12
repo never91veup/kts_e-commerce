@@ -1,0 +1,30 @@
+@import "styles/variables";
+
+.multi-dropdown {
+  width: 300px;
+
+  .dropdown-options {
+    width: 300px;
+    margin-top: $space-xxs;
+
+    background-color: white;
+    box-shadow: 0 4px 10px 0 $color-box-shadow;
+
+    .selected {
+      color: $brand;
+    }
+
+    .multiText {
+      padding: $space-s $space-xs;
+
+      font-size: 16px;
+      line-height: 20px;
+
+      cursor: pointer;
+
+      &:hover {
+        color: $text-secondary;
+      }
+    }
+  }
+}

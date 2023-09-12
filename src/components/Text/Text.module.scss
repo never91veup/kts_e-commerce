@@ -1,0 +1,79 @@
+@import "styles/variables";
+
+.text {
+  font-family: Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+
+  &-title {
+    font-size: 32px;
+    line-height: 48px;
+    font-weight: bold;
+  }
+
+  &-button {
+    font-size: 18px;
+    line-height: 18px;
+    white-space: nowrap;
+  }
+
+  &-p-20 {
+    font-size: 20px;
+    line-height: 24px;
+  }
+
+  &-p-18 {
+    font-size: 18px;
+    line-height: 22px;
+  }
+
+  &-p-16 {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  &-p-14 {
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  &-weight-normal {
+    font-weight: 400;
+  }
+
+  &-weight-medium {
+    font-weight: 500;
+  }
+
+  &-weight-bold {
+    font-weight: 700;
+  }
+
+  &-color-primary {
+    color: $text-primary;
+  }
+
+  &-color-secondary {
+    color: $text-secondary;
+  }
+
+  &-color-accent {
+    color: $text-accent;
+  }
+
+  h1.text {
+    font-size: 44px;
+    line-height: 48px;
+    font-weight: bold;
+  }
+
+  h2.text {
+    font-size: 28px;
+  }
+}
+
+/* Другие стили */
+.mb8 {
+  margin-bottom: 8px;
+}

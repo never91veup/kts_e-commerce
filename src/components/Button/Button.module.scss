@@ -1,0 +1,28 @@
+@import "styles/variables";
+
+.buttonMain {
+  padding: $space-s $space-l;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-family: Roboto, sans-serif;
+  line-height: 134%;
+  background-color: $brand;
+  color: $color-white;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $brand-hover !important;
+  }
+
+  &:disabled {
+    background-color: $color-grey !important;
+    cursor: not-allowed;
+  }
+}
+
+.buttonDisabled {
+  pointer-events: none;
+}
