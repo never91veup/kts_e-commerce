@@ -5,22 +5,35 @@ import {useEffect, useState} from "react";
 import * as React from "react";
 import Button from "components/Button";
 import Input from "components/Input";
-import MultiDropdown, {Option} from "components/MultiDropdown";
+// import MultiDropdown, {Option} from "components/MultiDropdown";
 import Text from "components/Text";
 import {IProduct} from "store/ItemStore.ts";
+import Dropdown from "../../components/Dropdown";
 import {BASE_API_URL} from "../../config/urls.ts";
+import {ICategory} from "../categories/CategoriesPage.tsx";
 import ItemList from "./components/ItemList";
 import styles from "./ListProductsPage.module.scss";
 
 const currentLimit: number = 3;
 
 const ListProductsPage: React.FC = observer(() => {
+  const [value, setValue] = useState<string>("");
+  const [prevCategoryId, setPrevCategoryId] = useState<string | null>(null);
+  const [categoryId, setCategoryId] = useState<string>("");
   const [searchText, setSearchText] = useState<string>("");
   const [allItemsLoaded, setAllItemsLoaded] = useState<boolean>(false);
   const [items, setItems] = useState<IProduct[]>([]);
-  const [currentOffset, setCurrentOffset] = useState<number>(0);
   const [fetching, setFetching] = useState<boolean>(true);
   const [isDirty, setIsDirty] = useState<boolean>(false);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const clearFilter = (): void => {
+    setValue("");
+    setCategoryId("");
+    setIsDirty(false);
+    setItems([]);
+    setAllItemsLoaded(false);
+    setFetching(true);
+  };
   const scrollHandler = debounce((): void => {
     const target: HTMLElement = document.documentElement;
     if (!allItemsLoaded && target.scrollHeight - (target.scrollTop + window.innerHeight) < 100) {
@@ -38,26 +51,34 @@ const ListProductsPage: React.FC = observer(() => {
   };
   const handleSearchClick = (): void => {
     setIsDirty(false);
-    setCurrentOffset(0);
     setItems([]);
     setAllItemsLoaded(false);
     setFetching(true);
   };
 
   useEffect((): void => {
+    axios.get(`${BASE_API_URL}/categories`)
+      .then((response): void => {
+        setCategories(response.data);
+      });
+  }, [])
+
+  useEffect((): void => {
     if (fetching) {
-      axios.get(`${BASE_API_URL}/products?${searchText ? `title=${searchText}&` : ''}limit=${currentLimit}&offset=${currentOffset}`)
+      axios.get(`${BASE_API_URL}/products?${searchText ? `title=${searchText}&` : ''}${categoryId ? `categoryId=${categoryId}&` : ''}limit=${currentLimit}&offset=${items.length}`)
         .then((response): void => {
           if (response.data.length === 0) {
             setAllItemsLoaded(true);
           } else {
             setItems((prevItems: IProduct[]) => [...prevItems, ...response.data]);
-            setCurrentOffset((prevState: number) => prevState + 3);
           }
         })
-        .finally(() => setFetching(false));
+        .finally(() => {
+          setFetching(false);
+          setPrevCategoryId(categoryId);
+        });
     }
-  }, [fetching]);
+  }, [fetching, categoryId]);
 
   useEffect((): () => void => {
     document.addEventListener('scroll', scrollHandler);
@@ -66,6 +87,23 @@ const ListProductsPage: React.FC = observer(() => {
       document.removeEventListener('scroll', scrollHandler);
     };
   }, [scrollHandler]);
+
+  const handleValueSelect = (selectedValue: string): void => {
+    setValue(selectedValue);
+    const selectedOption: ICategory | undefined = categories.find(category => category.name === selectedValue);
+    if (selectedOption) {
+      const newCategoryId = selectedOption.id.toString();
+      if (newCategoryId !== prevCategoryId) {
+        setCategoryId(newCategoryId);
+        setPrevCategoryId(newCategoryId);
+        handleSearchClick();
+      }
+    }
+  };
+  const selectedValue = categories.map(category => ({
+    key: category.id.toString(),
+    value: category.name
+  })).find((item): boolean => item.value === value);
 
   return (
     <div className={styles.main}>
@@ -92,17 +130,36 @@ const ListProductsPage: React.FC = observer(() => {
             </Button>
           </div>
           <div className={styles.filter}>
-            <MultiDropdown
-              getTitle={(opts: Option[]) => {
-                const strOpts: string[] = [];
-                opts.map((opt: Option) => strOpts.push(opt.value))
-                return strOpts.join(", ")
+            {/*<MultiDropdown*/}
+            {/*  getTitle={(values: Option[]): string => values.length === 0 ? "Filter" : values.map(({value}) => value).join(', ')}*/}
+            {/*  onChange={(data: Option[]) => {*/}
+            {/*    setValue(data); //дорешать*/}
+            {/*    setCategoryId(data[0].key);*/}
+            {/*    handleSearchClick();*/}
+            {/*  }}*/}
+            {/*  options={categories.map(category => ({*/}
+            {/*    key: category.id.toString(),*/}
+            {/*    value: category.name*/}
+            {/*  }))}*/}
+            {/*  value={value}*/}
+            {/*/>*/}
+            <Dropdown
+              selected={selectedValue || null}
+              options={categories.map(category => ({
+                key: category.id.toString(),
+                value: category.name
+              }))}
+              onChange={(selectedValue: string): void => {
+                handleValueSelect(selectedValue);
               }}
-              onChange={(): void => {
-              }}
-              options={[{key: "t1", value: "test1"}, {key: "t2", value: "test2"}, {key: "t3", value: "test3"}]}
-              value={[{key: "t2", value: "test2"}, {key: "t3", value: "test3"}]}
+              placeholder="Filter"
             />
+            <Button
+              onClick={clearFilter}
+              disabled={!value && !categoryId}
+            >
+              <Text tag="div" view="button" weight="normal" maxLines={1}>Clear Filter</Text>
+            </Button>
           </div>
         </div>
         <div className={styles.products}>
