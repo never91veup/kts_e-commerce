@@ -38,7 +38,7 @@ const Dropdown: React.FC<SelectProps> = ({
     return () => {
       window.removeEventListener('click', handleClick);
     };
-  }, [onClose]);
+  }, [isOpen, onClose]);
 
   React.useEffect(() => {
     const placeholderEl = placeholderRef.current;

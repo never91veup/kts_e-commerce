@@ -1,6 +1,6 @@
 import {observer} from 'mobx-react-lite';
 import * as React from 'react'
-import {IProduct} from "../../../../store/ItemStore.ts";
+import {IProduct} from "store/ItemStore.ts";
 import Item from "../Item";
 import styles from "./ItemList.module.scss";
 

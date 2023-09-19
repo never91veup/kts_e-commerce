@@ -16,6 +16,7 @@
     "lodash": "^4.17.21",
     "mobx": "^6.10.2",
     "mobx-react-lite": "^4.0.4",
+    "qs": "^6.11.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "6",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.5.9",
+    "@types/qs": "^6.9.8",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@types/react-lines-ellipsis": "^0.15.1",

@@ -1,8 +1,8 @@
-import axios from "axios";
+import {observer} from "mobx-react-lite";
 import * as React from 'react';
-import {useEffect, useState} from "react";
-import {BASE_API_URL} from "config/urls.ts";
-import Text from "../../components/Text";
+import {useContext} from "react";
+import Text from "components/Text";
+import {Context, IAppContext} from "../../main.tsx";
 // import styles from "./CategoriesPage.module.scss";
 
 export interface ICategory {
@@ -11,23 +11,20 @@ export interface ICategory {
   image: string;
 }
 
-const CategoriesPage: React.FC = () => {
-  const [categories, setCategories] = useState<ICategory[]>([]);
+const CategoriesPage: React.FC = observer(() => {
+  const store = useContext<IAppContext | null>(Context);
 
-  useEffect(() => {
-    axios.get(`${BASE_API_URL}/categories`)
-      .then((response): void => {
-        setCategories(response.data);
-      });
-  }, [])
+  React.useEffect(() => {
+    store?.category.fetchCategories();
+  }, [store?.category]);
 
   return (
     <div>
-      {categories.map((category: ICategory) => (
+      {store?.category.items.map((category: ICategory) => (
         <Text key={category.id} tag="div" view="p-20" weight="normal">{category.name}</Text>
       ))}
     </div>
   );
-};
+});
 
 export default CategoriesPage;

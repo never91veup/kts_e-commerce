@@ -1,38 +1,34 @@
 import axios from "axios";
 import {debounce} from 'lodash';
 import {observer} from 'mobx-react-lite';
-import {useEffect, useState} from "react";
 import * as React from "react";
 import Button from "components/Button";
+import Dropdown from "components/Dropdown";
 import Input from "components/Input";
-// import MultiDropdown, {Option} from "components/MultiDropdown";
+import {Option} from "components/MultiDropdown";
 import Text from "components/Text";
-import {IProduct} from "store/ItemStore.ts";
-import Dropdown from "../../components/Dropdown";
-import {BASE_API_URL} from "../../config/urls.ts";
-import {ICategory} from "../categories/CategoriesPage.tsx";
+import {BASE_API_URL} from "config/urls.ts";
+import {ICategory} from "pages/categories/CategoriesPage.tsx";
+import {Context, IAppContext} from "../../main.tsx";
 import ItemList from "./components/ItemList";
 import styles from "./ListProductsPage.module.scss";
 
 const currentLimit: number = 3;
 
 const ListProductsPage: React.FC = observer(() => {
-  const [value, setValue] = useState<string>("");
-  const [prevCategoryId, setPrevCategoryId] = useState<string | null>(null);
-  const [categoryId, setCategoryId] = useState<string>("");
-  const [searchText, setSearchText] = useState<string>("");
-  const [allItemsLoaded, setAllItemsLoaded] = useState<boolean>(false);
-  const [items, setItems] = useState<IProduct[]>([]);
-  const [fetching, setFetching] = useState<boolean>(true);
-  const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const store = React.useContext<IAppContext | null>(Context);
+  const [value, setValue] = React.useState<string>("");
+  const [prevCategoryId, setPrevCategoryId] = React.useState<string | null>(null);
+  const [categoryId, setCategoryId] = React.useState<string>("");
+  const [searchText, setSearchText] = React.useState<string>("");
+  const [allItemsLoaded, setAllItemsLoaded] = React.useState<boolean>(false);
+  const [fetching, setFetching] = React.useState<boolean>(true);
+  const [isDirty, setIsDirty] = React.useState<boolean>(false);
+
   const clearFilter = (): void => {
     setValue("");
     setCategoryId("");
-    setIsDirty(false);
-    setItems([]);
-    setAllItemsLoaded(false);
-    setFetching(true);
+    handleSearchClick();
   };
   const scrollHandler = debounce((): void => {
     const target: HTMLElement = document.documentElement;
@@ -51,36 +47,44 @@ const ListProductsPage: React.FC = observer(() => {
   };
   const handleSearchClick = (): void => {
     setIsDirty(false);
-    setItems([]);
+    store?.item.setItems([]);
     setAllItemsLoaded(false);
     setFetching(true);
   };
 
-  useEffect((): void => {
-    axios.get(`${BASE_API_URL}/categories`)
-      .then((response): void => {
-        setCategories(response.data);
-      });
-  }, [])
+  React.useEffect(() => {
+    const params: URLSearchParams = new URLSearchParams();
+    if (searchText) params.append('title', searchText);
+    if (categoryId) params.append('categoryId', categoryId);
+    if (currentLimit) params.append('limit', String(currentLimit));
+    if (store?.item.items.length) params.append('offset', String(store?.item.items.length - currentLimit));
 
-  useEffect((): void => {
+    // Заменяем текущий URL обновленным
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+  }, [searchText, categoryId, store?.item.items.length]);
+
+  React.useEffect((): void => {
+    store?.category.fetchCategories();
+  }, [store?.category]);
+
+  React.useEffect((): void => {
     if (fetching) {
-      axios.get(`${BASE_API_URL}/products?${searchText ? `title=${searchText}&` : ''}${categoryId ? `categoryId=${categoryId}&` : ''}limit=${currentLimit}&offset=${items.length}`)
+      axios.get(`${BASE_API_URL}/products?${searchText ? `title=${searchText}&` : ''}${categoryId ? `categoryId=${categoryId}&` : ''}limit=${currentLimit}&offset=${store?.item.items.length}`)
         .then((response): void => {
           if (response.data.length === 0) {
             setAllItemsLoaded(true);
           } else {
-            setItems((prevItems: IProduct[]) => [...prevItems, ...response.data]);
+            store?.item.setItems([...store.item.items, ...response.data]);
           }
         })
-        .finally(() => {
+        .finally((): void => {
           setFetching(false);
           setPrevCategoryId(categoryId);
         });
     }
-  }, [fetching, categoryId]);
+  }, [fetching, categoryId, searchText, store?.item]);
 
-  useEffect((): () => void => {
+  React.useEffect((): () => void => {
     document.addEventListener('scroll', scrollHandler);
 
     return function (): void {
@@ -88,11 +92,11 @@ const ListProductsPage: React.FC = observer(() => {
     };
   }, [scrollHandler]);
 
-  const handleValueSelect = (selectedValue: string): void => {
-    setValue(selectedValue);
-    const selectedOption: ICategory | undefined = categories.find(category => category.name === selectedValue);
+  const handleCategorySelect = (selectedCategory: string): void => {
+    setValue(selectedCategory);
+    const selectedOption: ICategory | undefined = store?.category.items.find(category => category.name === selectedCategory);
     if (selectedOption) {
-      const newCategoryId = selectedOption.id.toString();
+      const newCategoryId: string = selectedOption.id.toString();
       if (newCategoryId !== prevCategoryId) {
         setCategoryId(newCategoryId);
         setPrevCategoryId(newCategoryId);
@@ -100,10 +104,10 @@ const ListProductsPage: React.FC = observer(() => {
       }
     }
   };
-  const selectedValue = categories.map(category => ({
+  const selectedValue: Option | undefined = store?.category.items.map(category => ({
     key: category.id.toString(),
     value: category.name
-  })).find((item): boolean => item.value === value);
+  })).find((item: Option): boolean => item.value === value);
 
   return (
     <div className={styles.main}>
@@ -130,27 +134,14 @@ const ListProductsPage: React.FC = observer(() => {
             </Button>
           </div>
           <div className={styles.filter}>
-            {/*<MultiDropdown*/}
-            {/*  getTitle={(values: Option[]): string => values.length === 0 ? "Filter" : values.map(({value}) => value).join(', ')}*/}
-            {/*  onChange={(data: Option[]) => {*/}
-            {/*    setValue(data); //дорешать*/}
-            {/*    setCategoryId(data[0].key);*/}
-            {/*    handleSearchClick();*/}
-            {/*  }}*/}
-            {/*  options={categories.map(category => ({*/}
-            {/*    key: category.id.toString(),*/}
-            {/*    value: category.name*/}
-            {/*  }))}*/}
-            {/*  value={value}*/}
-            {/*/>*/}
             <Dropdown
               selected={selectedValue || null}
-              options={categories.map(category => ({
+              options={store !== null ? store.category.items.map(category => ({
                 key: category.id.toString(),
                 value: category.name
-              }))}
+              })) : []}
               onChange={(selectedValue: string): void => {
-                handleValueSelect(selectedValue);
+                handleCategorySelect(selectedValue);
               }}
               placeholder="Filter"
             />
@@ -168,7 +159,7 @@ const ListProductsPage: React.FC = observer(() => {
             <Text tag="div" view="p-20" weight="bold" color="accent">{10000000}</Text>
           </div>
           <div className={styles.productsList}>
-            <ItemList items={items}/>
+            <ItemList items={store !== null ? store.item.items : []}/>
           </div>
         </div>
       </div>
