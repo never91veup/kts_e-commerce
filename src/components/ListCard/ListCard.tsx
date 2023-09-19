@@ -62,4 +62,4 @@ const ListCard: React.FC<ListCardProps> = ({
   );
 };
 
-export default ListCard;
+export default React.memo(ListCard);

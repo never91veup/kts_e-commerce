@@ -24,56 +24,38 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
                                                        options,
                                                        value,
                                                        onChange,
-                                                       disabled: initialDisabled,
+                                                       disabled,
                                                        getTitle,
                                                        ...props
                                                      }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [filteredOptions, setFilteredOptions] = useState(options);
-  const [disabled, setDisabled] = useState(initialDisabled);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (isOpen) {
-      setFilteredOptions(options);
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
-    }
-  }, [isOpen, options]);
+  const [inputValue, setInputValue] = useState<string>("");
 
   useEffect(() => {
     document.addEventListener('click', handleDocumentClick);
-    return () => {
+    return (): void => {
       document.removeEventListener('click', handleDocumentClick);
     };
   }, []);
 
-  useEffect(() => {
-    setDisabled(initialDisabled);
-  }, [initialDisabled]);
-
-  const handleInputChange = (newValue: string) => {
+  const handleInputChange = (newValue: string): void => {
     if (disabled) {
       return;
     }
-    const filtered = options.filter((option) =>
-      option.value.toLowerCase().includes(newValue.toLowerCase())
-    );
-    setFilteredOptions(filtered);
+    setInputValue(newValue);
+    setIsOpen(true);
   };
 
-  const handleOptionClick = (clickedOption: Option) => {
-    const isSelected = value.some((option) => option.key === clickedOption.key);
-    if (isSelected) {
-      onChange(value.filter((option) => option.key !== clickedOption.key));
-    } else {
-      onChange([...value, clickedOption]);
-    }
+  const handleOptionClick = (clickedOption: Option): void => {
+    setSelectedOption(clickedOption);
+    setInputValue(clickedOption.value);
+    setIsOpen(false);
   };
 
-  const handleDocumentClick = (event: MouseEvent) => {
+  const handleDocumentClick = (event: MouseEvent): void => {
     if (
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
@@ -90,7 +72,7 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
         id="multi"
         ref={inputRef}
         placeholder={value.length === 0 ? getTitle(value) : ""}
-        value={value.length === 0 ? "" : getTitle(value)}
+        value={inputValue}
         onChange={handleInputChange}
         onFocus={() => setIsOpen(true)}
         disabled={disabled}
@@ -99,10 +81,10 @@ const MultiDropdown: React.FC<MultiDropdownProps> = ({
       />
       {isOpen && !disabled && (
         <ul className={styles['dropdown-options']}>
-          {filteredOptions.map((option) => (
+          {options.map((option: Option) => (
             <Text
               key={option.key}
-              className={value.some((selected) => selected.key === option.key) ? `${styles['multiText']} ${styles['selected']}` : styles['multiText']}
+              className={selectedOption?.key === option.key ? `${styles['multiText']} ${styles['selected']}` : styles['multiText']}
               onClick={() => handleOptionClick(option)}
             >
               {option.value}

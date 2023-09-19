@@ -5,9 +5,11 @@
 
   .dropdown-options {
     width: 300px;
+    height: 150px;
+    overflow: auto;
     margin-top: $space-xxs;
 
-    background-color: white;
+    background-color: $color-white;
     box-shadow: 0 4px 10px 0 $color-box-shadow;
 
     .selected {

@@ -1,9 +1,9 @@
 import * as React from "react";
 import {NavigateFunction, useNavigate} from "react-router-dom";
-import Button from "../../../../components/Button";
-import ListCard from "../../../../components/ListCard";
-import Text from "../../../../components/Text";
-import {IProduct} from "../../../../store/ItemStore.ts";
+import Button from "components/Button";
+import ListCard from "components/ListCard";
+import Text from "components/Text";
+import {IProduct} from "store/ItemStore.ts";
 
 export interface ItemProps {
   product: IProduct;

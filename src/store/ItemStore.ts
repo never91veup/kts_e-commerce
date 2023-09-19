@@ -1,12 +1,5 @@
 import {makeAutoObservable} from 'mobx';
-
-export interface ICategory {
-  creationAt: string;
-  id: number;
-  image: string;
-  name: string;
-  updatedAt: string;
-}
+import {ICategory} from "./CategoryStore.ts";
 
 export interface IProduct {
   id: number;

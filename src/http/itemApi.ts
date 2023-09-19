@@ -25,7 +25,7 @@ export const fetchOneItem = async (id: string | undefined) => {
   if (!id) {
     throw new Error("ID is undefined");
   }
-  const url: string = `${BASE_API_URL}/${id}`;
+  const url: string = `${BASE_API_URL}/products/${id}`;
   try {
     const response = await axios.get(url);
     return response.data;

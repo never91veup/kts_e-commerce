@@ -1,26 +1,35 @@
 import axios from "axios";
 import {debounce} from 'lodash';
 import {observer} from 'mobx-react-lite';
-import {useEffect, useState} from "react";
 import * as React from "react";
 import Button from "components/Button";
+import Dropdown from "components/Dropdown";
 import Input from "components/Input";
-import MultiDropdown, {Option} from "components/MultiDropdown";
+import {Option} from "components/MultiDropdown";
 import Text from "components/Text";
-import {IProduct} from "store/ItemStore.ts";
-import {BASE_API_URL} from "../../config/urls.ts";
+import {BASE_API_URL} from "config/urls.ts";
+import {ICategory} from "pages/categories/CategoriesPage.tsx";
+import {Context, IAppContext} from "../../main.tsx";
 import ItemList from "./components/ItemList";
 import styles from "./ListProductsPage.module.scss";
 
 const currentLimit: number = 3;
 
 const ListProductsPage: React.FC = observer(() => {
-  const [searchText, setSearchText] = useState<string>("");
-  const [allItemsLoaded, setAllItemsLoaded] = useState<boolean>(false);
-  const [items, setItems] = useState<IProduct[]>([]);
-  const [currentOffset, setCurrentOffset] = useState<number>(0);
-  const [fetching, setFetching] = useState<boolean>(true);
-  const [isDirty, setIsDirty] = useState<boolean>(false);
+  const store = React.useContext<IAppContext | null>(Context);
+  const [value, setValue] = React.useState<string>("");
+  const [prevCategoryId, setPrevCategoryId] = React.useState<string | null>(null);
+  const [categoryId, setCategoryId] = React.useState<string>("");
+  const [searchText, setSearchText] = React.useState<string>("");
+  const [allItemsLoaded, setAllItemsLoaded] = React.useState<boolean>(false);
+  const [fetching, setFetching] = React.useState<boolean>(true);
+  const [isDirty, setIsDirty] = React.useState<boolean>(false);
+
+  const clearFilter = (): void => {
+    setValue("");
+    setCategoryId("");
+    handleSearchClick();
+  };
   const scrollHandler = debounce((): void => {
     const target: HTMLElement = document.documentElement;
     if (!allItemsLoaded && target.scrollHeight - (target.scrollTop + window.innerHeight) < 100) {
@@ -38,34 +47,67 @@ const ListProductsPage: React.FC = observer(() => {
   };
   const handleSearchClick = (): void => {
     setIsDirty(false);
-    setCurrentOffset(0);
-    setItems([]);
+    store?.item.setItems([]);
     setAllItemsLoaded(false);
     setFetching(true);
   };
 
-  useEffect((): void => {
+  React.useEffect(() => {
+    const params: URLSearchParams = new URLSearchParams();
+    if (searchText) params.append('title', searchText);
+    if (categoryId) params.append('categoryId', categoryId);
+    if (currentLimit) params.append('limit', String(currentLimit));
+    if (store?.item.items.length) params.append('offset', String(store?.item.items.length - currentLimit));
+
+    // Заменяем текущий URL обновленным
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+  }, [searchText, categoryId, store?.item.items.length]);
+
+  React.useEffect((): void => {
+    store?.category.fetchCategories();
+  }, [store?.category]);
+
+  React.useEffect((): void => {
     if (fetching) {
-      axios.get(`${BASE_API_URL}/products?${searchText ? `title=${searchText}&` : ''}limit=${currentLimit}&offset=${currentOffset}`)
+      axios.get(`${BASE_API_URL}/products?${searchText ? `title=${searchText}&` : ''}${categoryId ? `categoryId=${categoryId}&` : ''}limit=${currentLimit}&offset=${store?.item.items.length}`)
         .then((response): void => {
           if (response.data.length === 0) {
             setAllItemsLoaded(true);
           } else {
-            setItems((prevItems: IProduct[]) => [...prevItems, ...response.data]);
-            setCurrentOffset((prevState: number) => prevState + 3);
+            store?.item.setItems([...store.item.items, ...response.data]);
           }
         })
-        .finally(() => setFetching(false));
+        .finally((): void => {
+          setFetching(false);
+          setPrevCategoryId(categoryId);
+        });
     }
-  }, [fetching]);
+  }, [fetching, categoryId, searchText, store?.item]);
 
-  useEffect((): () => void => {
+  React.useEffect((): () => void => {
     document.addEventListener('scroll', scrollHandler);
 
     return function (): void {
       document.removeEventListener('scroll', scrollHandler);
     };
   }, [scrollHandler]);
+
+  const handleCategorySelect = (selectedCategory: string): void => {
+    setValue(selectedCategory);
+    const selectedOption: ICategory | undefined = store?.category.items.find(category => category.name === selectedCategory);
+    if (selectedOption) {
+      const newCategoryId: string = selectedOption.id.toString();
+      if (newCategoryId !== prevCategoryId) {
+        setCategoryId(newCategoryId);
+        setPrevCategoryId(newCategoryId);
+        handleSearchClick();
+      }
+    }
+  };
+  const selectedValue: Option | undefined = store?.category.items.map(category => ({
+    key: category.id.toString(),
+    value: category.name
+  })).find((item: Option): boolean => item.value === value);
 
   return (
     <div className={styles.main}>
@@ -92,17 +134,23 @@ const ListProductsPage: React.FC = observer(() => {
             </Button>
           </div>
           <div className={styles.filter}>
-            <MultiDropdown
-              getTitle={(opts: Option[]) => {
-                const strOpts: string[] = [];
-                opts.map((opt: Option) => strOpts.push(opt.value))
-                return strOpts.join(", ")
+            <Dropdown
+              selected={selectedValue || null}
+              options={store !== null ? store.category.items.map(category => ({
+                key: category.id.toString(),
+                value: category.name
+              })) : []}
+              onChange={(selectedValue: string): void => {
+                handleCategorySelect(selectedValue);
               }}
-              onChange={(): void => {
-              }}
-              options={[{key: "t1", value: "test1"}, {key: "t2", value: "test2"}, {key: "t3", value: "test3"}]}
-              value={[{key: "t2", value: "test2"}, {key: "t3", value: "test3"}]}
+              placeholder="Filter"
             />
+            <Button
+              onClick={clearFilter}
+              disabled={!value && !categoryId}
+            >
+              <Text tag="div" view="button" weight="normal" maxLines={1}>Clear Filter</Text>
+            </Button>
           </div>
         </div>
         <div className={styles.products}>
@@ -111,7 +159,7 @@ const ListProductsPage: React.FC = observer(() => {
             <Text tag="div" view="p-20" weight="bold" color="accent">{10000000}</Text>
           </div>
           <div className={styles.productsList}>
-            <ItemList items={items}/>
+            <ItemList items={store !== null ? store.item.items : []}/>
           </div>
         </div>
       </div>
